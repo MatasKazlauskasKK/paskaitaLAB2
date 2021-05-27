@@ -1,0 +1,126 @@
+﻿@using paskaita.Models
+@{ ViewBag.Title = "Theme"; }
+<link href="~/Styles/Themes.css" rel="stylesheet" />
+
+
+<div class="Container">
+
+    <div class="row" style="padding 10px; display: flex; justify-content: left">
+
+        <div class="ThemeBlockTitle">
+            <h2>Temos</h2>
+
+        </div>
+        <div>
+            @using (Html.BeginForm("AddStudent", "Moodly", FormMethod.Post))
+            {
+@Html.Hidden("class_id", (object)ViewBag.ClassId)
+                <div style="padding:24px">
+                    <button type="submit" class="btn btn-primary"> +Pridėti studentus </button>
+                </div>}
+
+
+
+
+
+
+        </div>
+        <div>
+            @using (Html.BeginForm("StudentList", "Moodly", FormMethod.Post))
+            {
+@Html.Hidden("class_id", (object)ViewBag.ClassId)
+                <div style="padding:24px">
+                    <button type="submit" class="btn btn-primary"> Peržiūrėti studentus </button>
+                </div>}
+        </div>
+
+
+
+    </div>
+</div>
+
+@if (ViewData["mod_topics"] != null)
+{
+<div class="container">
+    <div class="col">
+        @foreach (var Topic in ViewData["mod_topics"] as List<Course.Theme>)
+        {
+
+<div class="content">
+    <div class="col">
+        <div class="ThemeBlock">
+            <div class="row" style="padding 10px; display: flex; justify-content: left">
+
+                <div class="ThemeBlockTitle">
+                    <h3>@Topic.Title</h3>
+
+                </div>
+                <div class="ThemeBlockPanel">
+                    @using (Html.BeginForm("RemoveTheme", "Moodly", FormMethod.Post))
+                    {
+@Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.Hidden("Topic_name", (object)Topic.Title)
+
+                                                <div style="padding:2px">
+                                                    <button type="submit" class="btn btn-primary"> Trinti </button>
+                                                </div>}
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        @if (Topic.ThemeBlocks != null)
+        {
+<div class="container">
+    @foreach (var block in Topic.ThemeBlocks as List<Course.ThemeBlock>)
+    {
+<h3>@block.Title</h3> if (block.Text != null)
+{
+<div><h3 class="ThemeBlockText">@block.Text</h3></div>}
+}
+</div>}
+        <div class="ThemeBlockPanel">
+            @using (Html.BeginForm("AddNewThemeBlock", "Moodly", FormMethod.Post))
+            {
+                        @Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.TextBox("Topic_name", @Request["Topic_name"], new { @class = "form-control" })
+
+                                                <div style="padding:2px">
+                                                    <button type="submit" class="btn btn-primary"> Pridėti temos bloką </button>
+                                                </div>}
+
+
+        </div>
+
+    </div>
+
+</div>}
+        <div class="ThemeBlock">
+            <div class="row">
+                @using (Html.BeginForm("AddNewTheme", "Moodly", FormMethod.Post))
+                {
+
+<div class="col-xs-3">
+    <div class="form-group">
+        @Html.Hidden("class_id", (object)ViewBag.ClassId)
+        @Html.Label("Naujos temos pavadinimas")
+        @Html.TextBox("Topic_name", @Request["Topic_name"], new { @class = "form-control" })
+    </div>
+</div>
+                    <div>
+                        <div style="padding:24px">
+                            <button type="submit" class="btn btn-primary"> +Pridėti </button>
+                        </div>
+
+                    </div>}
+            </div>
+        </div>
+    </div>
+</div>}
+
+
+

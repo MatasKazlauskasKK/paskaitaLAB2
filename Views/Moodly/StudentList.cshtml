@@ -1,0 +1,55 @@
+﻿@model IEnumerable<paskaita.Models.Account>
+@using paskaita.Models
+
+@{
+    ViewBag.Title = "Studentų sąrašas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if(ViewBag.ClassId==0)
+{
+    ViewBag.ClassId=TempData["ClassId"];
+}
+
+<h2>@ViewBag.Title, @ViewBag.ClassId klasės</h2>
+
+
+@if(TempData["Sucess"]!=null)
+            {
+                <p>@TempData["Sucess"]</p>
+            }
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Vardas</th>
+        <th>Pavardė</th>
+        <th>Pasirinkimai</th>
+    </tr>
+
+    @foreach (var acc in ViewData["Accounts"] as List<Course.ClassStudents>)
+    {
+        <tr>
+                <td>@acc.account_id</td>
+                <td>@acc.account_name</td>
+                <td>@acc.account_surname</td>
+                
+                <td>
+                    @using (Html.BeginForm("DeleteStudentClass", "Moodly", FormMethod.Post))
+                    {
+                        @Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.Hidden("account_id", (object)acc.id)
+                        @Html.Hidden("account_name", (object)acc.account_name)
+                        @Html.Hidden("account_surname", (object)acc.account_surname)
+                        <div style="padding:2px">
+                            <button type="submit" class="btn btn-primary"> Pašalinti </button>
+                        </div>}
+
+                </td>
+            
+        </tr>
+        
+    }
+
+</table>
+<div>
+    @Html.ActionLink("Atgal", "Class", new { id = @ViewBag.ClassId })
+</div>

@@ -1,0 +1,18 @@
+/*--
+Author: W3layouts
+Author URL: http://w3layouts.com
+--*/
+
+/* reset code */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    
+    color: #fff;
+    background-color: #222;
+    
+}
+

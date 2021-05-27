@@ -1,0 +1,58 @@
+﻿@model IEnumerable<paskaita.Models.Account>
+@using paskaita.Models
+
+@{
+    ViewBag.Title = "Pridėti studentą";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if(ViewBag.ClassId==0)
+{
+    ViewBag.ClassId=TempData["ClassId"];
+}
+
+<h2>@ViewBag.Title prie @ViewBag.ClassId klasės</h2>
+
+<p>
+    @Html.ActionLink("Sukurti naują studentą", "Register", "Account")
+</p>
+@if(TempData["Sucess"]!=null)
+            {
+                <p>@TempData["Sucess"]</p>
+            }
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Vardas</th>
+        <th>Pavardė</th>
+        <th>Rolė</th>
+        <th>Pasirinkimai</th>
+    </tr>
+
+    @foreach (var acc in ViewData["Accounts"] as List<Account>)
+    {
+        <tr>
+                <td>@acc.id</td>
+                <td>@acc.Name</td>
+                <td>@acc.Surname</td>
+                <td>@acc.Role</td>
+                <td>
+                    @using (Html.BeginForm("AddStudentToClass", "Moodly", FormMethod.Post))
+                    {
+                        @Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.Hidden("account_id", (object)acc.id)
+                        @Html.Hidden("account_name", (object)acc.Name)
+                        @Html.Hidden("account_surname", (object)acc.Surname)
+                        <div style="padding:2px">
+                            <button type="submit" class="btn btn-primary"> +Pridėti </button>
+                        </div>}
+
+                </td>
+            
+        </tr>
+        
+    }
+
+</table>
+<div>
+    @Html.ActionLink("Atgal", "Class", new { id = @ViewBag.ClassId })
+</div>

@@ -1,0 +1,42 @@
+﻿@using paskaita.Models
+
+
+@{ ViewBag.Title = "Classes"; }
+
+
+<div>
+    <p style="display:inline-block; margin-top: 30px">
+        @Html.ActionLink("New course", "ViewCourses", new { loggedid = ViewBag.loggedid }, new { @class = "btn btn-primary" })
+    </p>
+    <p style="display:inline-block; margin-top: 30px; margin-left: 770px">
+        @Html.ActionLink(linkText: "Logout", actionName: "Index", controllerName: "Home", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+    </p>
+</div>
+<p style="padding-top: 30px">
+    @Html.ActionLink("Back to Dashboard", "Index", new { loggedid = ViewBag.loggedid }, new { @class = "btn btn-primary" })
+</p>
+
+<h2>Courselist</h2>
+
+
+@using (Html.BeginForm("Index", "Module", FormMethod.Post))
+{
+
+<br> if (ViewData["Modules"] != null)
+                {
+<div class="row">
+    @foreach (var module in ViewData["Modules"] as List<Course.ClassRoom>)
+    {
+
+<div class="col-md-4" style="padding-bottom: 10px">
+    <div class="card" style="width: 18rem; border-style: dashed; border-color: black">
+        <div class="card-body">
+            <h3 class="card-title">@module.Title, id-@module.Id</h3>
+            <p class="card-text">asd</p>
+            @Html.ActionLink("Peržiūrėti modulį", "UniqueModule", "Module", new { Id = @module.Id }, new { @class = "btn btn-primary btn-large" })
+        </div>
+    </div>
+</div>}
+</div>}
+
+ }

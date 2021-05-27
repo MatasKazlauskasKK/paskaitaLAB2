@@ -1,0 +1,25 @@
+.ThemeBlock {
+    background-color: #f2f2f2;
+    margin: 10px;
+    padding: 10px;
+    width: 100%;
+}
+.ThemeBlockText {
+    
+    padding-left:20px;
+    font-size: 16px;
+    
+}
+.ThemeBlockTitle {
+    margin-left: 6px;
+    padding-left: 10px;
+
+}
+.ThemeBlockPanel {
+    margin: auto;
+    margin-right: 6px;
+    padding:10px;
+}
+.BigBox{
+    width: 50%;
+}

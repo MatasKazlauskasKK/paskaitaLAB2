@@ -1,0 +1,34 @@
+﻿@using paskaita.Models
+@{ ViewBag.Title = "Theme"; }
+<link href="~/Styles/Themes.css" rel="stylesheet" />
+
+
+<h2>Temos sukūrimas</h2>
+
+@if (ViewBag.Success == true)
+{
+<div class="alert alert-success">Tema sėkmingai pridėta</div>}
+@if (ViewBag.Update == true)
+{
+<div class="alert alert-warning">Tema sėkmingai pakeista</div>}
+@if (ViewBag.Deletion == true)
+{
+<div class="alert alert-danger">Tema sėkmingai ištrinta</div>}
+<div class="row">
+    @using (Html.BeginForm("UniqueModule", "Moodly", FormMethod.Post))
+    {
+<div class="col-xs-3">
+    <div class="form-group">
+        @Html.Label("Temos Pavadinimas")
+        @Html.TextBox("topic", @Request["title"], new { @class = "form-control" })
+    </div>
+</div>
+                <div>
+                    <div style="padding:24px">
+                        <button type="submit" class="btn btn-primary"> Saugoti </button>
+                    </div>
+
+                </div>}
+</div>
+
+

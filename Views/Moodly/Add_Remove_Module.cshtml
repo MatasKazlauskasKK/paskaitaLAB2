@@ -1,0 +1,103 @@
+﻿@using paskaita.Models
+@{
+    ViewBag.Title = "Add_Remove_Module";
+}
+
+<h2>Pakeitimai moduliams</h2>
+
+<br />
+
+@if (ViewBag.Success == true)
+{
+    <div class="alert alert-success">Modulis sekmingai pridėtas</div>
+}
+@if (ViewBag.Deletion == true)
+{
+    <div class="alert alert-danger">Modulis sekmingai ištrintas</div>
+}
+@if (ViewBag.Update == true)
+{
+    <div class="alert alert-warning">Modulis sekmingai Redaguotas</div>
+}
+
+<div class="row">
+    @using (Html.BeginForm("AddModuleForm", "Module", FormMethod.Post))
+    {
+        <div class="col-xs-3">
+            <div class="form-group">
+                @Html.Label("Modulio Pavadinimas")
+                @Html.TextBox("m_name", @Request["m_name"], new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-xs-3">
+            <div class="form-group">
+                @Html.Label("Modulio Aprašymas")
+                @Html.TextArea("m_desc", @Request["m_desc"], new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <button type="submit" class="btn btn-primary"> Saugoti </button>
+            </div>
+
+        </div>
+
+
+    }
+
+    @using (Html.BeginForm("EditModuleForm", "Module", FormMethod.Post))
+    {
+        <div class="container" style="padding-inline: 20px">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    @Html.Label("Modulio Id")
+                    @Html.TextBox("module_id", @Request["module_id"], new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="col-xs-3">
+                <div class="form-group">
+                    @Html.Label("Modulio Pavadinimas")
+                    @Html.TextBox("mod_name", @Request["mod_name"], new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="col-xs-3">
+                <div class="form-group">
+                    @Html.Label("Modulio Aprašymas")
+                    @Html.TextArea("mod_desc", @Request["mod_desc"], new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <button type="submit" class="btn btn-warning"> Redaguoti </button>
+                </div>
+
+            </div>
+        </div>
+
+    }
+
+    @using (Html.BeginForm("RemoveModuleForm", "Module", FormMethod.Post))
+    {
+        <div class="container">
+            <div class="col-xs-3">
+                <div class="form-group">
+                    @Html.Label("Modulio Id")
+                    @Html.TextBox("mod_id", @Request["mod_id"], new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <button type="submit" class="btn btn-danger"> Ištrinti modulį </button>
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>

@@ -1,0 +1,57 @@
+﻿@model paskaita.Models.Account
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<link href="~/Styles/login.css" rel="stylesheet" />
+<div class="signinform">
+    <h1>Virtual learning course</h1>
+    <!-- container -->
+    <div class="container">
+        <!-- main content -->
+        <div class="w3l-form-info">
+            <div class="w3_info">
+                <h2>Register</h2>
+                <form action="VerifyRegister" method="post">
+
+                    @Html.ValidationMessage("CustomError")
+                    <div class="input-group">
+                        <span><i class="fas fa-user" aria-hidden="true"></i></span>
+                        <input type="text" name="Name" placeholder="First name" required="">
+                    </div>
+                    <div class="input-group">
+                        <span><i class="fas fa-user" aria-hidden="true"></i></span>
+                        <input type="text" name="Surname" placeholder="Last name" required="">
+                    </div>
+                    <div class="input-group">
+                        <span><i class="fas fa-user" aria-hidden="true"></i></span>
+                        <input type="text" name="UserName" placeholder="Username" required="">
+                    </div>
+                    <div class="input-group">
+                        <span><i class="fas fa-key" aria-hidden="true"></i></span>
+                        <input type="Password" name="Password" placeholder="Password" required="">
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" type="submit">Register</button>
+                </form>
+
+
+                <p class="account">Already have an account? <a href="Login">Log in</a></p>
+            </div>
+        </div>
+        <!-- //main content -->
+    </div>
+    <!-- //container -->
+    <!-- footer -->
+    <div class="footer">
+        <p>
+
+
+        </p>
+    </div>
+    <!-- footer -->
+</div>
+
+<!-- fontawesome v5-->
+
+<script src="~/Scripts/fontawesome.js"></script>
