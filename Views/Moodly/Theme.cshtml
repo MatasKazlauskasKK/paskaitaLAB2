@@ -58,7 +58,7 @@
                 <div class="ThemeBlockPanel">
                     @using (Html.BeginForm("RemoveTheme", "Moodly", FormMethod.Post))
                     {
-@Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.Hidden("class_id", (object)ViewBag.ClassId)
                         @Html.Hidden("Topic_name", (object)Topic.Title)
 
                                                 <div style="padding:2px">
@@ -87,6 +87,7 @@
             @using (Html.BeginForm("AddNewThemeBlock", "Moodly", FormMethod.Post))
             {
                         @Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        @Html.Hidden("topic_id", (object)Topic.id)
                         @Html.TextBox("Topic_name", @Request["Topic_name"], new { @class = "form-control" })
 
                                                 <div style="padding:2px">

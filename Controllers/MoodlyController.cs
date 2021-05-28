@@ -160,8 +160,10 @@ namespace paskaita.Controllers
             if (ThemeBlock != null && classRoom != null)
             {
                 string courseId = Request.Form["class_id"];
+                string topicId = Request.Form["topic_id"];
                 ThemeBlock.Title = form["Topic_name"];
                 classRoom.Id = Convert.ToInt32(courseId);
+                int topicID = Convert.ToInt32(topicId);
                 string title = ThemeBlock.Title;
                 using (var cn = new MySqlConnection(cn_string))
                 {
@@ -171,7 +173,7 @@ namespace paskaita.Controllers
                         string sQuery = "INSERT INTO theme_blocks (`theme_id`, `title`, `text`) VALUES (@id, @title, @text)";
                         var ids2 = cn.ExecuteAsync(sQuery, new
                         {
-                            id = classRoom.Id,
+                            id = topicID,
                             title = ThemeBlock.Title,
                             text = "",
 
