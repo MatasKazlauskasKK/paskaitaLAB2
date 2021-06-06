@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "AccountManage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Account Manage</h2>
+
+<div class="row">
+    @using (Html.BeginForm("ManageAccount", "Account", FormMethod.Post))
+    {
+
+        
+    <div class="form-group">
+
+        @Html.Label("Pavardė ")
+
+        @Html.TextBox("User_Surname", @Request["User_Surname"], new { @class = "form-control" })
+        @*@Html.Label("Pavardė")
+        @Html.TextBox("User_Surname", @Request["User_Surname"], new { @class = "form-control" })*@
+        @Html.ValidationMessage("CustomError")
+    </div>
+        
+        <div>
+            <div style="padding:5px">
+                <button type="submit" class="btn btn-primary"> Atnaujinti </button>
+            </div>
+
+        </div>}

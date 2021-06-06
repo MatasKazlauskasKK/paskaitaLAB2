@@ -1,0 +1,59 @@
+﻿@model IEnumerable<paskaita.Models.Account>
+@using paskaita.Models
+
+@{
+    ViewBag.Title = "Studentų sąrašas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (ViewBag.ClassId == null)
+{
+    ViewBag.ClassId=TempData["ClassId"];
+}
+
+<h2>@ViewBag.Title, @ViewBag.ClassId klasės</h2>
+
+
+@if(TempData["Sucess"]!=null)
+            {
+                <p>@TempData["Sucess"]</p>
+            }
+<table class="table">
+    <tr>
+        <th>Id</th>
+        <th>Vardas</th>
+        <th>Pavardė</th>
+        <th>Pažymys</th>
+        <th>Pasirinkimai</th>
+    </tr>
+
+    @foreach (var acc in ViewData["Accounts"] as List<Course.ClassStudents>)
+    {
+        <tr>
+                <td>@acc.account_id</td>
+                <td>@acc.account_name</td>
+                
+                <td>@acc.account_surname</td>
+                <td>@acc.student_grade</td>
+                
+                <td>
+                    @using (Html.BeginForm("SaveGrade", "Moodly", FormMethod.Post))
+                    {
+                        @Html.Hidden("class_id", (object)acc.class_id)
+                        @Html.Hidden("account_id", (object)acc.account_id)
+                        @Html.Hidden("account_name", (object)acc.account_name)
+                        @Html.Hidden("account_surname", (object)acc.account_surname)
+                        @Html.TextBox("Student_grade", @Request["Student_grade"], new { @class = "form-control" })
+                        <div style="padding:2px">
+                            <button type="submit" class="btn btn-primary"> Išsaugoti </button>
+                        </div>}
+
+                </td>
+            
+        </tr>
+        
+    }
+
+</table>
+<div>
+    @Html.ActionLink("Atgal", "Class", new { id = @ViewBag.ClassId })
+</div>

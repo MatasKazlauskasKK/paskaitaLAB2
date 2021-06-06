@@ -78,6 +78,13 @@ namespace paskaita.Models
         {
             public int Id { get; set; }
             public string Title { get; set; }
+            public int class_id { get; set; }
+        }
+        public class ClassRoom1
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+            public int class_id { get; set; }
         }
         public class Theme
         {
@@ -102,6 +109,18 @@ namespace paskaita.Models
             public int account_id { get; set; }
             public string account_name { get; set; }
             public string account_surname { get; set; }
+            public string student_grade { get; set; }
+            public string Title { get; set; }
+        }
+        public class StudentGrades
+        {
+            public int id { get; set; }
+            public int class_id { get; set; }
+            public int account_id { get; set; }
+            public string UserName { get; set; }
+            public string Name { get; set; }
+            public string Surname { get; set; }
+            public string student_grade { get; set; }
         }
     }
 }

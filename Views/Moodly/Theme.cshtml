@@ -3,6 +3,7 @@
 <link href="~/Styles/Themes.css" rel="stylesheet" />
 
 
+
 <div class="Container">
 
     <div class="row" style="padding 10px; display: flex; justify-content: left">
@@ -28,10 +29,21 @@
         <div>
             @using (Html.BeginForm("StudentList", "Moodly", FormMethod.Post))
             {
-@Html.Hidden("class_id", (object)ViewBag.ClassId)
+                @Html.Hidden("class_id", (object)ViewBag.ClassId)
                 <div style="padding:24px">
                     <button type="submit" class="btn btn-primary"> Peržiūrėti studentus </button>
                 </div>}
+
+        </div>
+        <div>
+            @using (Html.BeginForm("StudentGradeList", "Moodly", FormMethod.Post))
+                    {
+                        @Html.Hidden("class_id", (object)ViewBag.ClassId)
+                        
+
+                                                <div style="padding:24px">
+                                                    <button type="submit" class="btn btn-primary"> Pažymiai </button>
+                                                </div>}
         </div>
 
 
@@ -56,6 +68,7 @@
 
                 </div>
                 <div class="ThemeBlockPanel">
+
                     @using (Html.BeginForm("RemoveTheme", "Moodly", FormMethod.Post))
                     {
                         @Html.Hidden("class_id", (object)ViewBag.ClassId)
@@ -64,12 +77,8 @@
                                                 <div style="padding:2px">
                                                     <button type="submit" class="btn btn-primary"> Trinti </button>
                                                 </div>}
-
-
+                    
                 </div>
-
-
-
             </div>
         </div>
 

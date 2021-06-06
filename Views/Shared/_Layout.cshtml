@@ -1,12 +1,32 @@
-﻿<!DOCTYPE html>
+﻿@using System.Web
+
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - Paskaitos darbas</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @if (ViewBag.userName == null)
+    {
+
+        if (Request.Cookies["UserName"]== null)
+        {
+            @Html.Action("Login", "Account");
+
+        }
+        else
+        {
+            ViewBag.userName = Request.Cookies["UserName"].Value;
+        }
+
+
+    }
 </head>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -21,11 +41,41 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Classes", "Classes", "Moodly")</li>
-                    <li>@Html.ActionLink("test", "About", "Home")</li>
-                    
-                    <li>@Html.ActionLink("Login", "Login", "Account")</li>
+
+
+
                 </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>@Html.ActionLink("Atsijungti", "Login", "Account")</li>
+                </ul>
+                @if (Request.Cookies["UserName"] != null)
+                {if (Int16.Parse(Request.Cookies["UserRole"].Value) == 0)
+                    {
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>@Html.ActionLink("Prisijungta kaip: Admin", "AccountManage", "Account")</li>
+                        </ul>
+                    }
+                if (Int16.Parse(Request.Cookies["UserRole"].Value) <= 10 && Int16.Parse(Request.Cookies["UserRole"].Value) > 0)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Prisijungta kaip: Destytojas", "AccountManage", "Account")</li>
+                    </ul>
+                }
+                if (Int16.Parse(Request.Cookies["UserRole"].Value) > 10)
+                { <ul class="nav navbar-nav navbar-right">
+                    <li>@Html.ActionLink("Prisijungta kaip: Studentas", "AccountManage", "Account")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>@Html.ActionLink("Peržiūrėti įvertinimus", "MyGrades", "Moodly")</li>
+                </ul>}
+                
+            }
+
+
             </div>
+
+
         </div>
     </div>
     <div class="container body-content">

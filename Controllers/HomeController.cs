@@ -19,7 +19,15 @@ namespace paskaita.Controllers
         MySqlConnection db_contex = new MySqlConnection("server=localhost; user id=root; password=Namai19; database=moodle2; pooling=false;");
         public ActionResult Index()
         {
-            return View();
+            if (Request.Cookies["UserName"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+
+            }
+            else
+            {
+                return View();
+            }
         }
 
         public ActionResult About()

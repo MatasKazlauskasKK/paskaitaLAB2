@@ -4,19 +4,17 @@
 @{ ViewBag.Title = "Classes"; }
 
 
-<h2>Courselist</h2>
-@if (Request.Cookies["UserRole"].Value != "0")
-{
-    @Html.ActionLink("Registruotis prie naujos klasės", "ClassesRegistry", "Moodly", new { @class = "btn btn-primary btn-large" })
-}
 
+<h2>All Courses list</h2>
 
 
 @using (Html.BeginForm("Index", "Module", FormMethod.Post))
 {
 
-<br> if (ViewData["Modules"] != null)
-                {
+<br>
+ @Html.ValidationMessage("CustomError")
+ if (ViewData["Modules"] != null)
+{
 <div class="row">
     @foreach (var module in ViewData["Modules"] as List<Course.ClassRoom>)
     {
@@ -26,7 +24,8 @@
         <div class="card-body">
             <h3 class="card-title">@module.Title, id-@module.class_id</h3>
             <p class="card-text">asd</p>
-            @Html.ActionLink("Peržiūrėti modulį", "Class", "Moodly", new { Id = @module.class_id }, new { @class = "btn btn-primary btn-large" })
+            
+            @Html.ActionLink("Registruotis", "RegisterToClass", "Moodly", new { Id = @module.class_id }, new { @class = "btn btn-primary btn-large" })
         </div>
     </div>
 </div>}

@@ -246,6 +246,10 @@
     <Content Include="Views\Moodly\AddTheme.cshtml" />
     <Content Include="Views\Moodly\AddStudent.cshtml" />
     <Content Include="Views\Moodly\StudentList.cshtml" />
+    <Content Include="Views\Account\AccountManage.cshtml" />
+    <Content Include="Views\Moodly\ClassList.cshtml" />
+    <Content Include="Views\Moodly\StudentGrades.cshtml" />
+    <Content Include="Views\Moodly\MyGrades.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

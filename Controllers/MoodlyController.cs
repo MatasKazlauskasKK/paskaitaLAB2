@@ -20,17 +20,109 @@ namespace paskaita.Controllers
 
         public ActionResult Classes()
         {
-
+            int account_role = Convert.ToInt32(Request.Cookies["UserRole"].Value);
+            int account_id = Convert.ToInt32(Request.Cookies["UserId"].Value);
             List<Models.Course.ClassRoom> account;
             using (var cn = new MySqlConnection(cn_string))
             {
-                string sQuery = "SELECT * FROM classrooms";
+                if (account_role > 10)
+                {                 //"SELECT A.*, B.Title as class_name FROM moodle2.class_students A left join moodle2.classrooms B ON A.class_id=B.class_id WHERE A.account_id=1;"
+                    string sQuery = "SELECT A.*, B.Title as Title FROM moodle2.class_students A left join moodle2.classrooms B ON A.class_id=B.class_id WHERE A.account_id='" + account_id + "'";
+                    account = cn.QueryAsync<Models.Course.ClassRoom>(sQuery).Result.ToList();
+                    
+                    
 
-                account = cn.QueryAsync<Models.Course.ClassRoom>(sQuery).Result.ToList();
+                    ViewData["Modules"] = account;
+                    return View();
+                }
+                if (account_role <= 10)
+                {
+                    string sQuery = "SELECT * FROM classrooms";
+                    account = cn.QueryAsync<Models.Course.ClassRoom>(sQuery).Result.ToList();
+
+
+                    ViewData["Modules"] = account;
+                    return View();
+                }
+                return View("Index");
+
+
             } // Visos pamokos
 
-            ViewData["Modules"] = account;
-            return View();
+            
+        }
+        public ActionResult ClassesRegistry()
+        {
+            int account_role = Convert.ToInt32(Request.Cookies["UserRole"].Value);
+            int account_id = Convert.ToInt32(Request.Cookies["UserId"].Value);
+            List<Models.Course.ClassRoom> account;
+            using (var cn = new MySqlConnection(cn_string))
+            {
+                
+                
+                    string sQuery = "SELECT * FROM classrooms";
+                    account = cn.QueryAsync<Models.Course.ClassRoom>(sQuery).Result.ToList();
+
+
+                    ViewData["Modules"] = account;
+                    return View("ClassList");
+                
+
+
+            } // Visos pamokos
+
+
+        }
+        public ActionResult RegisterToClass(int? id, FormCollection form)
+        {
+            string account_name = Request.Cookies["UserName"].Value;
+            int account_role = Convert.ToInt32(Request.Cookies["UserRole"].Value);
+            int account_id = Convert.ToInt32(Request.Cookies["UserId"].Value);
+            string account_surname = Request.Cookies["UserSurname"].Value;
+            using (var cn = new MySqlConnection(cn_string))
+            {
+                string sQuery = "SELECT account_id,class_id FROM class_students WHERE account_id='" + account_id + "' AND class_id='" + id + "'";
+                List<Course.ClassStudents> account = cn.QueryAsync<Course.ClassStudents>(sQuery).Result.ToList();
+                if (account.Count > 0)
+                {
+                    TempData["Sucess"] = "Studentas jau yra šioje klasėja";
+                    TempData["ClassId"] = id;
+                    ModelState.AddModelError("CustomError", "Klaida, jau esate prisiregistravęs prie šios pamokos");
+                    return View("ClassList");
+                }
+                else
+                {
+                    try
+                    {
+                        sQuery = "INSERT INTO class_students (`class_id`, `account_id`,`account_name`,`account_surname`) VALUES (@class_id, @account_id,@account_name,@account_surname)";
+                        var ids3 = cn.ExecuteAsync(sQuery, new
+                        {
+                            class_id = id,
+                            account_id = account_id,
+                            account_name = account_name,
+                            account_surname = account_surname,
+
+                        }).Result;
+
+
+                    }
+                    catch  // Klaida pridedant vartotoją    
+                    {
+
+                        TempData["Sucess"] = "Klaida";
+                        TempData["ClassId"] = id;
+                        ModelState.AddModelError("CustomError", "Klaida");
+                        return RedirectToAction("ClassesRegistry", "Moodly");
+                    }
+                }
+                TempData["Sucess"] = "Pridėta";
+                TempData["ClassId"] = id;
+                ModelState.AddModelError("CustomError", "Pamoka priregistruota");
+                return RedirectToAction("ClassesRegistry", "Moodly");
+
+            }
+            
+
         }
         public ActionResult Class(int? id, FormCollection form)
         {
@@ -218,7 +310,7 @@ namespace paskaita.Controllers
             List<Models.Course.ClassStudents> account;
             using (var cn = new MySqlConnection(cn_string))
             {
-                string sQuery = "SELECT * FROM class_students WHERE class_id='" + course_id + "'";
+                string sQuery = "SELECT A.*,B.Name as account_name, B.Surname as account_surname FROM moodle2.class_students A LEFT JOIN moodle2.accounts B ON A.account_id=B.id WHERE class_id='" + course_id + "'";
 
                 account = cn.QueryAsync<Models.Course.ClassStudents>(sQuery).Result.ToList();
             } // Visos pamokos
@@ -256,13 +348,11 @@ namespace paskaita.Controllers
                 {
                     try
                     {
-                        sQuery = "INSERT INTO class_students (`class_id`, `account_id`,`account_name`,`account_surname`) VALUES (@class_id, @account_id,@account_name,@account_surname)";
+                        sQuery = "INSERT INTO class_students (`class_id`, `account_id`) VALUES (@class_id, @account_id)";
                         var ids3 = cn.ExecuteAsync(sQuery, new
                         {
                             class_id = course_id,
                             account_id = account_id,
-                            account_name = accountName,
-                            account_surname = accountSurname,
 
                         }).Result;
 
@@ -306,6 +396,145 @@ namespace paskaita.Controllers
                 TempData["Sucess"] = "Pašalinta";
                 TempData["ClassId"] = course_id;
                 return RedirectToAction("StudentList", "Moodly", new { id = course_id });
+
+            }
+        }
+        public ActionResult StudentGradeList(int? id,FormCollection form)
+        {
+            string courseId = Request.Form["class_id"];
+            if (courseId ==null)
+            {
+                courseId = id.ToString();
+            }
+            string themeId = Request.Form["Theme_Id"];
+            int course_id = Convert.ToInt32(courseId);
+            List<Models.Course.ClassStudents> account;
+            using (var cn = new MySqlConnection(cn_string))
+            {
+              
+                //SELECT A.*, B.* FROM moodle2.accounts A LEFT JOIN moodle2.student_grades B ON A.id=B.account_id WHERE ( B.class_id=1 OR B.class_id IS NULL) AND ( B.theme_id=1 OR B.theme_id IS NULL);
+                //string sQuery = "SELECT A.*, B.* FROM moodle2.accounts A LEFT JOIN moodle2.student_grades B ON A.id=B.account_id WHERE ( B.class_id="+ course_id +  " OR B.class_id IS NULL) AND ( B.theme_id=" + themeId + " OR B.theme_id IS NULL)";
+                string sQuery = "SELECT A.*,B.Name as account_name, B.Surname as account_surname FROM moodle2.class_students A LEFT JOIN moodle2.accounts B ON A.account_id=B.id WHERE class_id=" + courseId +"";
+                account = cn.QueryAsync<Models.Course.ClassStudents>(sQuery).Result.ToList();
+                for(int i=0;i<account.Count;i++)
+                {
+                    string sQuery1 = "SELECT student_grade FROM moodle2.student_grades WHERE class_id=" + courseId + " AND account_id=" + account[i].account_id + "";
+
+                    try
+                    {
+                        account[i].student_grade = cn.QueryAsync<string>(sQuery1).Result.First();
+                    }
+                    catch
+                    {
+                        account[i].student_grade = "";
+                    }
+                }
+
+
+            } // Visos pamokos
+            ViewBag.themeId = themeId;
+            ViewData["Accounts"] = account;
+            ViewBag.ClassId = course_id;
+            return View("StudentGrades");
+
+        }
+        public ActionResult MyGrades(FormCollection form)
+        {
+            string courseId = Request.Form["class_id"];
+            string themeId = Request.Form["Theme_Id"];
+            int account_id = Convert.ToInt32(Request.Cookies["UserId"].Value);
+            int course_id = Convert.ToInt32(courseId);
+            List<Models.Course.ClassStudents> account;
+            using (var cn = new MySqlConnection(cn_string))
+            {
+
+                //SELECT A.*,B.Name as account_name, B.Surname as account_surname FROM moodle2.student_grades A LEFT JOIN moodle2.accounts B ON A.account_id=B.id WHERE account_id=4;
+                string sQuery = "SELECT A.*,B.Name as account_name, B.Surname as account_surname,C.Title as Title FROM moodle2.student_grades A LEFT JOIN moodle2.accounts B ON A.account_id=B.id LEFT JOIN moodle2.classrooms C ON A.class_id=C.class_id WHERE account_id=" + account_id + "";
+                account = cn.QueryAsync<Models.Course.ClassStudents>(sQuery).Result.ToList();
+                
+                
+
+
+            } // Visos pamokos
+            ViewBag.themeId = themeId;
+            ViewData["Accounts"] = account;
+            ViewBag.ClassId = course_id;
+            return View("MyGrades");
+
+        }
+        public ActionResult SaveGrade(FormCollection form, Course.ClassStudents ClassStudents)
+        {
+
+            string courseId = Request.Form["class_id"];
+            string accountId = Request.Form["account_id"];
+            string accountName = Request.Form["account_name"];
+            string accountSurname = Request.Form["account_surname"];
+            string student_grade = Request.Form["Student_grade"];
+            int course_id = Convert.ToInt32(courseId);
+            int account_id = Convert.ToInt32(accountId);
+            ViewBag.ClassId = course_id;
+            ViewBag.Sucess = "Pridėta";
+
+
+
+            using (var cn = new MySqlConnection(cn_string))
+            {
+                string sQuery = "SELECT account_id,class_id,student_grade FROM student_grades WHERE account_id='" + account_id + "' AND class_id='" + course_id + "'";
+                List<Course.ClassStudents> account = cn.QueryAsync<Course.ClassStudents>(sQuery).Result.ToList();
+                if (account.Count > 0)
+                {
+                    try
+                    {   //sQuery = "UPDATE accounts       SET" + "`Username`      = @userName, `Name`=@name, `Surname`=@surname, `Role`=@role WHERE (`id` = @ID); ";
+                        sQuery = "UPDATE student_grades SET" + "`student_grade` = @student_grade WHERE (`class_id` = @class_id) AND (`account_id`= @account_id)";
+                        var ids3 = cn.ExecuteAsync(sQuery, new
+                        {
+                            class_id = course_id,
+                            account_id = account_id,
+                            student_grade = student_grade,
+
+
+                        }).Result;
+
+
+                    }
+                    catch  // Klaida pridedant vartotoją    
+                    {
+
+                        TempData["Sucess"] = "Klaida";
+                        TempData["ClassId"] = course_id;
+                        return RedirectToAction("StudentGradeList", "Moodly", new { id = course_id });
+                    }
+                    TempData["Sucess"] = "Atnaujinta";
+                    TempData["ClassId"] = course_id;
+                    return RedirectToAction("StudentGradeList", "Moodly", new { id = course_id });
+                }
+                else
+                {
+                    try
+                    {
+                        sQuery = "INSERT INTO student_grades (`class_id`, `account_id`,`student_grade`) VALUES (@class_id, @account_id,@student_grade)";
+                        var ids3 = cn.ExecuteAsync(sQuery, new
+                        {
+                            class_id = course_id,
+                            account_id = account_id,
+                            student_grade = student_grade,
+                            
+
+                        }).Result;
+
+
+                    }
+                    catch  // Klaida pridedant vartotoją    
+                    {
+
+                        TempData["Sucess"] = "Klaida";
+                        TempData["ClassId"] = course_id;
+                        return RedirectToAction("StudentGradeList", "Moodly", new { id = course_id });
+                    }
+                }
+                TempData["Sucess"] = "Pridėta";
+                TempData["ClassId"] = course_id;
+                return RedirectToAction("StudentGradeList", "Moodly", new { id = course_id });
 
             }
         }
